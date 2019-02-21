@@ -1,0 +1,7 @@
+spring:
+    profiles:
+        active: dev
+    mvc:
+        view:
+            prefix: /WEB-INF/admin/
+            suffix: .jsp

@@ -1,0 +1,39 @@
+server:
+  port: 8001
+  
+#当前系统环境配置
+dodo:
+    debug: 
+       true #为开启调试模式，支持本地相关测试代码的运行
+
+gateway:
+    sdk: 
+       apiUrl: http://www.test.com:19093
+       appKey: yourAppkey
+       appSecret: yourAppSecret
+       retryTimes: 1
+
+sms:
+    aliSmsAppKey: 23779228
+    aliSmsAppSecret: 9d9788c22c9a4dbc8522fae7b97b15ae
+    #微信机器人登录超时或者登录无效，发送短信的模板
+    msg:
+       phone: 18826410953
+       reLoginCode: SMS_152542531
+
+      
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/system?zeroDateTimeBehavior=convertToNull&useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true
+        username: root
+        password: root
+        
+timer:
+    # 每分钟校验机器人登录状态
+    checkLoginStatusManagerSchedule:
+        check: 0 */100 * * * ?
+    # 刷新同步登录用户的信息
+    refreshWeixinInfo: 
+        sync: 0 */100 * * * ?
+           
+        

@@ -1,0 +1,6 @@
+spring:
+datasource:
+  systemdb:
+     url: jdbc:mysql://localhost:3306/system?zeroDateTimeBehavior=convertToNull&useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true
+     username: root
+     password: root

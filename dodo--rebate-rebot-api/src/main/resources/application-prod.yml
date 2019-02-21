@@ -1,0 +1,34 @@
+server:
+  port: 8085
+  
+gateway:
+    sdk: 
+       apiUrl: http://47.107.22.131
+       appKey: yourAppkey
+       appSecret: yourAppSecret
+       retryTimes: 1
+       
+sms:
+    aliSmsAppKey: 23779228
+    aliSmsAppSecret: 9d9788c22c9a4dbc8522fae7b97b15ae
+    #微信机器人登录超时或者登录无效，发送短信的模板
+    msg:
+       phone: 18826410953
+       reLoginCode: SMS_152542531
+
+m:
+    domain: http://m.delijiajiao.com
+
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/system?zeroDateTimeBehavior=convertToNull&useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true
+        username: root
+        password: root
+
+timer:
+    # 每分钟校验机器人登录状态
+    checkLoginStatusManagerSchedule:
+        check: 0 */1 * * * ?
+    # 刷新同步登录用户的信息
+    refreshWeixinInfo: 
+        sync: 0 */2 * * * ?
