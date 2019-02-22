@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
-	public static void main(String [] agrs) {
+	public static void main(String[] agrs) {
 		SpringApplication.run(Application.class, agrs);
 	}
 }
