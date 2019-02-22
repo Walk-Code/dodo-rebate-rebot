@@ -11,6 +11,7 @@
 
     <groupId>com.dodo.project.rebot-api</groupId>
     <artifactId>dodo-rebate-rebot-api</artifactId>
+    <!--<packaging>war</packaging>-->
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -29,6 +30,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- end 用户编译jsp-->
         <dependency>
@@ -54,7 +56,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
-        <!-- end Spring 官方提供的热部署插件 &ndash;&gt;-->
+        <!-- end Spring 官方提供的热部署插件 -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,14 +65,14 @@
         </dependency>
 
         <!-- start 引入日志组件 -->
-        <dependency>
+        <!--<dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
-        </dependency>
+        </dependency>-->
         <!-- end 引入日志组件 -->
 
-        <!-- 引入三方微信机器人 -->
+        <!-- start 引入三方微信机器人 -->
         <dependency>
             <groupId>com.helen</groupId>
             <artifactId>robot</artifactId>
@@ -90,13 +92,34 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- end 引入三方微信机器人 -->
 
-        <!-- 引入reebot common-->
+        <!-- start 引入reebot common-->
         <dependency>
             <groupId>com.dodo.project.rebot.commons</groupId>
             <artifactId>dodo-rebate-reobt-commons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!-- end 引入reebot common -->
+
+        <!-- start 移除 spring-boot 自带日志依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- end 移除 spring-boot 自带日志依赖 -->
+        <!-- start 引入log4j2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <!-- end 引入log4j2 -->
     </dependencies>
 
     <build>
@@ -107,6 +130,13 @@
                 <configuration>
                     <classifier>exec</classifier>
                     <fork>true</fork>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
         </plugins>
