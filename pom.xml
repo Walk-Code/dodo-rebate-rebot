@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>dodo--rebate-rebot-api</module>
+        <module>dodo-rebate-rebot-api</module>
         <module>dodo-rebate-reobt-commons</module>
         <module>dodo-rebate-rebot-dao</module>
     </modules>
