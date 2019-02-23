@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+
+    <!-- 级别 属性 -->
+    <Properties>
+        <!-- [HL] 项目简称 -->
+        <!-- 5p 日志级别 -->
+        <!-- 日志文件目录 -->
+        <Property name="APP_LOG_ROOT">logs</Property>
+
+        <!-- 日志压缩文件目录 -->
+        <Property name="APP_LOG_GZ_ROOT">logs</Property>
+        <!-- 文件名称 -->
+        <Property name="FILE_NAME">${date:yyyy-MM-dd}</Property>
+
+        <!-- 日志格式配置 -->
+        <Property name="LOG_PATTERN">
+            [HL] [%-5p %d{yyyy-MM-dd HH:mm:ss SSS}--%-r(ms)] %n[%l] %n[]-[]-%-m %n%n
+        </Property>
+        <!-- <Filters>
+             <BurstFilter level="INFO" rate="10" maxBurst="100"/>
+         </Filters>-->
+    </Properties>
+
+    <Appenders>
+        <!-- 日志输出到控制台 -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <!-- 控制台只输出level及以上配置 -->
+            <!--<ThresholdFilter level="debug" onMatch="ACCEPT"></ThresholdFilter>-->
+            <!-- 控制台日志输出布局 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- 框架错误日志 -->
+        <RollingFile name="frameworkLog"
+                     fileName="${APP_LOG_ROOT}/app-framework-${FILE_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/app-framework-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <!-- 只记录error级别的日志 -->
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 日志输出布局 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- 当文件大小超过19500KB创建一个新的日志文件-->
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <!-- 最多创建10个日志文件-->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <!-- 系统debug 滚动日志 -->
+        <RollingFile name="debugLog" fileName="${APP_LOG_ROOT}/app-debug-${FILE_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/app-debug-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 只记录debug级别的日志 -->
+            <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 日志输出布局 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <!-- 程序日常滚动日志 -->
+        <RollingFile name="infoLog" fileName="${APP_LOG_ROOT}/app-info-${FILE_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/app-info-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <!-- 只记录info级别的日志 -->
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 日志输出布局 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <!-- 程序错误滚动日志 -->
+        <RollingFile name="errorLog" fileName="${APP_LOG_ROOT}/app-error-${FILE_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/app-error-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <!-- 只记录error级别的日志 -->
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT"
+                              onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- 当app-error.log 文件大小超过19500KB创建一个新的日志文件 -->
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <!-- 滚动默认文件数 -->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!-- 系统性能滚动日志 -->
+        <RollingFile name="perfLog" fileName="${APP_LOG_ROOT}/app-perf-${FILE_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/app-perf-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+        <!-- 输出级别小于trace所有滚动日志 -->
+        <RollingFile name="warnLog" fileName="${APP_LOG_ROOT}/app-warn-${FILE_NAME}.log"
+                     filePattern="${APP_LOG_ROOT}/app-trace-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 只记录warn级别日志 -->
+            <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+       <!--配置日志输出包名 和日志级别-->
+        <Logger name="com.dodo" additivity="false" level="info">
+            <AppenderRef ref="warnLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <!--配置日志-->
+       <!-- <Logger name="com.dodo.project.rebate" additivity="false" level="debug">
+            <AppenderRef ref="debugLog"/>
+            <AppenderRef ref="infoLog"/>
+            <AppenderRef ref="errorLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>-->
+        <!--监听org.springframework 框架基本日志-->
+       <!-- <Logger name="org.springframework" additivity="false" level="info">
+            <AppenderRef ref="perfLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>-->
+
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.springframework" level="INFO"></logger>
+        <logger name="org.mybatis" level="INFO"></logger>
+        <Root level="debug">
+            <AppenderRef ref="debugLog"/>
+            <AppenderRef ref="infoLog"/>
+            <AppenderRef ref="errorLog"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+        <!-- 配置支持同步&&异步 -->
+        <!--<AsyncRoot level="debug" includeLocation="true">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="infoFile"/>
+            <AppenderRef ref="errorFile"/>
+        </AsyncRoot>-->
+    </Loggers>
+
+</Configuration>

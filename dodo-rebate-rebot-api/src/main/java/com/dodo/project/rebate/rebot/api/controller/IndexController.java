@@ -21,6 +21,8 @@ import com.dodo.project.rebate.rebot.api.base.AbstractRobotBaseController;
 import com.dodo.project.rebate.rebot.api.manager.service.ItchatService;
 import com.dodo.project.rebate.rebot.api.utils.ThreadHelper;
 import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +47,15 @@ public class IndexController extends AbstractRobotBaseController {
     @Resource
     private ItchatService itchatService;
 
+    public static final Logger log = LoggerFactory.getLogger(IndexController.class);
+
     @RequestMapping(value = "/login")
     public void index() {
+        log.trace("trace");
+        log.debug("debug");
+        log.info("info");
+        log.warn("warn");
+        log.error("error");
         renderJsp("/login/index");
     }
 
@@ -106,4 +115,5 @@ public class IndexController extends AbstractRobotBaseController {
         MessageTools.sendMsgById("test" + RandomUtils.nextDouble(), id);
         responseSuccess("发送成功.");
     }
+
 }
