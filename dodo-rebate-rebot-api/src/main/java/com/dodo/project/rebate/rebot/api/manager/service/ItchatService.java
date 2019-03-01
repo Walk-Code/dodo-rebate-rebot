@@ -18,6 +18,7 @@ package com.dodo.project.rebate.rebot.api.manager.service;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dodo.project.base.web.utils.JsonHelper;
 
 /* 
 * @Description: 微信机器人相关逻辑处理 - 接口类 
@@ -162,4 +163,31 @@ public interface ItchatService {
 	* @Date: 2019/2/20 14:52
 	*/ 
 	boolean checkIsLogout();
+	
+	/* 
+	* @Description: 开启接受信息线程
+	* @Author: walk_code walk_code@163.com
+	* @Param: [] 
+	* @return: void  
+	* @Date: 2019/2/27 14:56
+	*/ 
+	void startMsgCenterThread();
+	
+	/*
+	* @Description: 获取用户名称通过昵称
+	* @Author: walk_code walk_code@163.com
+	* @Param: [nickName] 
+	* @return: java.lang.String  
+	* @Date: 2019/2/28 14:11
+	*/ 
+	String getUserNameByNickName(String nickName);
+	
+	/* 
+	* @Description: 测试log4j在服务类
+	* @Author: walk_code walk_code@163.com
+	* @Param: [] 
+	* @return: void  
+	* @Date: 2019/3/1 14:43
+	*/ 
+	void testLog4jInServer();
 }

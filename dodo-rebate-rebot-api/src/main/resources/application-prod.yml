@@ -1,6 +1,11 @@
 server:
   port: 8085
-  
+
+#当前系统环境配置
+dodo:
+    debug:
+       false #为开启调试模式，支持本地相关测试代码的运行
+
 gateway:
     sdk: 
        apiUrl: http://47.107.22.131
@@ -15,9 +20,6 @@ sms:
     msg:
        phone: 18826410953
        reLoginCode: SMS_152542531
-
-m:
-    domain: http://m.delijiajiao.com
 
 spring:
     datasource:
