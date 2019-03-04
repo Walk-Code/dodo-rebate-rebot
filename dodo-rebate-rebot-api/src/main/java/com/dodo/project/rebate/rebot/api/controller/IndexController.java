@@ -140,14 +140,14 @@ public class IndexController extends AbstractRobotBaseController {
 
 	@RequestMapping(value = "/test/sendInviteByUserId")
 	public void sendInviteByUserId(String nickName) {
-		List<JSONObject> list = itchatService.getContactList();
-		String toUserName = "";
+		List<JSONObject> list       = itchatService.getContactList();
+		String           toUserName = "";
 		toUserName = WechatTools.getUserNameByNickName(nickName);
 		log.info("获取所有好友列表：{}", JsonHelper.toJson(list));
 		if (StringUtils.isEmpty(toUserName)) {
-			for(JSONObject jsonObject: list){
-				if (jsonObject.toJSONString().contains(nickName)){
-					toUserName =jsonObject.getString("UserName");
+			for (JSONObject jsonObject : list) {
+				if (jsonObject.toJSONString().contains(nickName)) {
+					toUserName = jsonObject.getString("UserName");
 				}
 			}
 		}
@@ -158,4 +158,50 @@ public class IndexController extends AbstractRobotBaseController {
 		responseSuccess(result);
 	}
 
+	private static Integer i = 0;
+
+	public static void main(String[] args) {
+		Object object  = new Object();
+		Thread threadA = new Thread(new PrintNumber(object));
+		Thread threadB = new Thread(new PrintNumber(object));
+		threadA.setName("奇数");
+		threadB.setName("偶数");
+
+		threadB.start();
+		threadA.start();
+	}
+
+	static class PrintNumber implements Runnable {
+		volatile static int i = 1;
+		Object lock;
+
+		PrintNumber(Object lock) {
+			this.lock = lock;
+		}
+
+		@Override
+		public void run() {
+			while (i < 100) {
+				synchronized (lock) {
+					if (i % 2 != 0 && Thread.currentThread().getName().equals("奇数")) {
+						System.out.println(Thread.currentThread().getName() + "-" + i);
+						i++;
+						try {
+							lock.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				synchronized (lock) {
+					if (i % 2 == 0 && Thread.currentThread().getName().equals("偶数")) {
+						System.out.println(Thread.currentThread().getName() + "-" + i);
+						i++;
+						lock.notify();
+					}
+				}
+			}
+		}
+	}
 }
