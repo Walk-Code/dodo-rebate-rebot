@@ -28,11 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import com.dodo.project.base.exception.utils.AssertHelper;
 import com.dodo.project.base.web.utils.JsonHelper;
 import com.dodo.project.rebate.rebot.api.config.ItchatConfiguration;
+import com.dodo.project.rebate.rebot.api.manager.MessageDealManager;
 import com.dodo.project.rebate.rebot.api.manager.service.ItchatService;
 import com.dodo.project.rebate.rebot.api.utils.FileDownloaderHelper;
 import com.dodo.project.rebate.rebot.api.utils.ThreadHelper;
+import com.helen.robot.core.MsgCenter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -59,6 +62,8 @@ import com.helen.robot.utils.enums.URLEnum;
 import com.helen.robot.utils.enums.parameters.BaseParaEnum;
 import com.helen.robot.utils.tools.CommonTools;
 
+import javax.annotation.Resource;
+
 /*
  * @Description: 微信机器人相关逻辑处理 - 具体实现类
  * @Author: walk_code walk_code@163.com
@@ -69,9 +74,12 @@ import com.helen.robot.utils.tools.CommonTools;
 @Service
 public class ItchatServiceImpl implements ItchatService {
 
-	private final static Logger logger = LoggerFactory.getLogger(ItchatServiceImpl.class);
+	public final static Logger logger = LoggerFactory.getLogger(ItchatServiceImpl.class);
 
 	private static final int MAX_REQUEST_TIME = 5;
+
+	@Resource
+	private MessageDealManager messageDealManager;
 
 	@Override
 	public boolean isWxAlive() {
@@ -80,6 +88,7 @@ public class ItchatServiceImpl implements ItchatService {
 
 	@Override
 	public String getUserIdByFuzzySearch(String searchText) {
+		logger.info("搜索用户，搜索条件：{}", searchText);
 		JSONObject jsonObject = getXXXIdByFuzzySearch(searchText, getContactList());
 		if (jsonObject != null) {
 			logger.info("匹配对应关键词[{}]的好友，好友昵称：{}，好友UserName：{}", searchText, jsonObject.getString("NickName"), jsonObject.getString("UserName"));
@@ -242,6 +251,13 @@ public class ItchatServiceImpl implements ItchatService {
 		return true;
 	}
 
+	/*
+	 * @Description: 移除重复数据
+	 * @Author: walk_code walk_code@163.com
+	 * @Param: [list]
+	 * @return: java.util.List<com.alibaba.fastjson.JSONObject>
+	 * @Date: 2019/2/26 18:00
+	 */
 	private List<JSONObject> removeDuplicateDataOfJSONObject(List<JSONObject> list) {
 		if (CollectionUtils.isEmpty(list)) {
 			return new ArrayList<>();
@@ -250,14 +266,23 @@ public class ItchatServiceImpl implements ItchatService {
 		for (JSONObject jSONObject : list) {
 			map.put(jSONObject.getString("NickName") + jSONObject.getString("RemarkName"), jSONObject);
 		}
+
 		return new ArrayList<>(map.values());
 	}
 
+	/*
+	 * @Description: 移除重复数据
+	 * @Author: walk_code walk_code@163.com
+	 * @Param: [list]
+	 * @return: java.util.List<java.lang.String>
+	 * @Date: 2019/2/26 18:00
+	 */
 	private List<String> removeDuplicateDataOfString(List<String> list) {
 		if (CollectionUtils.isEmpty(list)) {
 			return new ArrayList<>();
 		}
 		Set<String> set = new HashSet<>(list);
+
 		return new ArrayList<>(set);
 	}
 
@@ -279,10 +304,35 @@ public class ItchatServiceImpl implements ItchatService {
 			logger.info(RetCodeEnum.MOBILE_LOGIN_OUT.getType());
 			isLogout = true;
 		}
+
 		return isLogout;
 	}
 
-	/**
+	@Override
+	public void startMsgCenterThread() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MsgCenter.handleMsg(messageDealManager);
+			}
+		}).start();
+	}
+
+	@Override
+	public String getUserNameByNickName(String nickName) {
+		// TODO
+		return null;
+	}
+
+	@Override
+	public void testLog4jInServer() {
+		logger.info("测试日志输出: {}", "test");
+		logger.warn("测试日志输出: {}", "test");
+		logger.debug("测试日志输出: {}", "test");
+		logger.error("测试日志输出: {}", "test");
+	}
+
+	/*
 	 *
 	 * <b>syncCheck</b> <br/>
 	 * <br/>
@@ -326,11 +376,16 @@ public class ItchatServiceImpl implements ItchatService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return resultMap;
 	}
 
-	/**
-	 * 微信初始化
+	/*
+	 * @Description: 微信初始化
+	 * @Author: walk_code walk_code@163.com
+	 * @Param: []
+	 * @return: boolean
+	 * @Date: 2019/2/26 17:58
 	 */
 	private boolean webWxInit() {
 		Core core = Core.getInstance();
@@ -389,15 +444,20 @@ public class ItchatServiceImpl implements ItchatService {
 			logger.error("微信初始化错误:", e);
 			return false;
 		}
+
 		return true;
 	}
 
-	/**
-	 * 获取联系人
+	/*
+	 * @Description: 获取联系人
+	 * @Author: walk_code walk_code@163.com
+	 * @Param: []
+	 * @return: void
+	 * @Date: 2019/2/26 17:58
 	 */
 	private void webWxGetContact() {
-		Core core = Core.getInstance();
-		String url = String.format(URLEnum.WEB_WX_GET_CONTACT.getUrl(), core.getLoginInfo().get(StorageLoginInfoEnum.url.getKey()));
+		Core                core     = Core.getInstance();
+		String              url      = String.format(URLEnum.WEB_WX_GET_CONTACT.getUrl(), core.getLoginInfo().get(StorageLoginInfoEnum.url.getKey()));
 		Map<String, Object> paramMap = core.getParamMap();
 		HttpEntity          entity   = reRequest(url, paramMap);
 
@@ -452,17 +512,26 @@ public class ItchatServiceImpl implements ItchatService {
 					core.getContactList().add(o);
 				}
 			}
+
 			return;
 		} catch (Exception e) {
 			logger.error("获取联系人发送错误:", e);
 		}
+
 		return;
 	}
 
+	/*
+	 * @Description: 获取微信联系人
+	 * @Author: walk_code walk_code@163.com
+	 * @Param: []
+	 * @return: void
+	 * @Date: 2019/2/26 17:59
+	 */
 	private void WebWxBatchGetContact() {
 		Core core = Core.getInstance();
 
-		String url = String.format(URLEnum.WEB_WX_BATCH_GET_CONTACT.getUrl(), core.getLoginInfo().get(StorageLoginInfoEnum.url.getKey()), new Date().getTime(), core.getLoginInfo().get(StorageLoginInfoEnum.pass_ticket.getKey()));
+		String              url      = String.format(URLEnum.WEB_WX_BATCH_GET_CONTACT.getUrl(), core.getLoginInfo().get(StorageLoginInfoEnum.url.getKey()), new Date().getTime(), core.getLoginInfo().get(StorageLoginInfoEnum.pass_ticket.getKey()));
 		Map<String, Object> paramMap = core.getParamMap();
 		paramMap.put("Count", core.getGroupIdList().size());
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
@@ -490,15 +559,12 @@ public class ItchatServiceImpl implements ItchatService {
 		}
 	}
 
-	/**
-	 *
-	 * <b>reRequest</b> <br/>
-	 * <br/>
-	 *
-	 * 微信api重连 <br/>
-	 *
-	 * @author xqyjjq walk_code@163.com void
-	 *
+	/*
+	 * @Description: 微信api重连
+	 * @Author: walk_code walk_code@163.com
+	 * @Param: [url, map]
+	 * @return: org.apache.http.HttpEntity
+	 * @Date: 2019/2/26 17:59
 	 */
 	private HttpEntity reRequest(String url, Map<String, Object> map) {
 		HttpEntity entity = null;

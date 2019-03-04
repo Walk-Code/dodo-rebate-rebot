@@ -20,7 +20,6 @@ sms:
     msg:
        phone: 18826410953
        reLoginCode: SMS_152542531
-
       
 spring:
     datasource:

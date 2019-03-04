@@ -23,7 +23,7 @@ package com.dodo.project.rebate.rebot.api.config;
 * @Date: 2019/2/20 14:03
 */ 
 public class ItchatConfiguration {
-	public final static String qcCodePath = System.getProperty("java.io.tmpdir");;
+	public final static String qcCodePath = System.getProperty("java.io.tmpdir");
 	// public final static String qcCodePath = "/helen-robot";
 	
 	public final static String robotName  = "jiaoxue";

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO" monitorInterval="30">
+<Configuration status="WARN" monitorInterval="30">
 
     <!-- 级别 属性 -->
     <Properties>
@@ -114,10 +114,10 @@
 
     <Loggers>
        <!--配置日志输出包名 和日志级别-->
-        <Logger name="com.dodo" additivity="false" level="info">
+        <!--<Logger name="com.dodo" additivity="false" level="info">
             <AppenderRef ref="warnLog"/>
             <AppenderRef ref="Console"/>
-        </Logger>
+        </Logger>-->
         <!--配置日志-->
        <!-- <Logger name="com.dodo.project.rebate" additivity="false" level="debug">
             <AppenderRef ref="debugLog"/>
@@ -134,7 +134,7 @@
         <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
         <logger name="org.springframework" level="INFO"></logger>
         <logger name="org.mybatis" level="INFO"></logger>
-        <Root level="debug">
+        <Root level="all">
             <AppenderRef ref="debugLog"/>
             <AppenderRef ref="infoLog"/>
             <AppenderRef ref="errorLog"/>
