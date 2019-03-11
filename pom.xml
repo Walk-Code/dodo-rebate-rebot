@@ -18,8 +18,6 @@
         <module>dodo-rebate-rebot-api</module>
         <module>dodo-rebate-reobt-commons</module>
         <module>dodo-rebate-rebot-dao</module>
-        <module>dodo-project-rebot-admin</module>
+        <!--<module>dodo-project-rebot-admin</module>-->
     </modules>
-
-
 </project>
