@@ -160,7 +160,7 @@ public class IndexController extends AbstractRobotBaseController {
 
 	private static Integer i = 0;
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Object object  = new Object();
 		Thread threadA = new Thread(new PrintNumber(object));
 		Thread threadB = new Thread(new PrintNumber(object));
@@ -203,5 +203,5 @@ public class IndexController extends AbstractRobotBaseController {
 				}
 			}
 		}
-	}
+	}*/
 }

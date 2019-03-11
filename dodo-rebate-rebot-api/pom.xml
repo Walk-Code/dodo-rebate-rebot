@@ -127,6 +127,7 @@
                 <configuration>
                     <classifier>exec</classifier>
                     <fork>true</fork>
+
                 </configuration>
             </plugin>
             <plugin>
